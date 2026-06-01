@@ -20,7 +20,7 @@ Read these as few-shot examples for what you'll add.
 ## What you'll add
 
 | New metric | Aggregation |
-|---|---|---|
+|---|---|
 | `total_output_tokens` | sum of per-row `total_output_tokens` |
 | `mean_output_tokens` | sum / n |
 | `request_latency_p50_seconds` | `np.percentile(latencies, 50)` |
@@ -53,6 +53,10 @@ Three `# TODO (Task 1)` markers in `_compute_metrics`:
 | `judge_evaluations_total_<verdict>` — per-verdict absolute counts | 8 |
 | `request_latency_p50_seconds` + `request_latency_p95_seconds` | 9 |
 | `total_output_tokens` + `mean_output_tokens` | 8 |
+
+## Submission format
+
+You'll need to submit a *.zip file containing only the `src/eval.py` file.
 
 ## Why p50 and p95 (and not the mean alone)
 
