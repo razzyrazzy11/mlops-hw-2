@@ -125,6 +125,7 @@ def _compute_metrics(rows: list[dict]) -> dict[str, float]:
         # is the integer count. Mirrors the Prometheus counter
         # `judge_evaluations_total` from Task 4 (one MLflow metric name per
         # verdict, since MLflow run-metrics don't carry labels). See tasks/task1.md.
+        metrics[f"judge_evaluations_total_{verdict}"] = count
 
     total_cost = sum(r["total_cost_usd"] + r["judge_cost_usd"] for r in rows)
     metrics["total_cost_usd"] = total_cost
@@ -139,7 +140,10 @@ def _compute_metrics(rows: list[dict]) -> dict[str, float]:
     # wrap with `float(...)` before storing. Mirrors the Prometheus histogram
     # quantiles for `chat_request_duration_seconds` from Task 4.
     # See tasks/task1.md.
-
+    metrics["request_latency_p50_seconds"] = float(
+        np.percentile(latencies, 50))
+    metrics["request_latency_p95_seconds"] = float(
+        np.percentile(latencies, 95))
     # Token aggregates. Input side is a worked example; you'll add output side.
     in_toks = [r["total_input_tokens"] for r in rows]
     metrics["total_input_tokens"] = float(sum(in_toks))
@@ -147,7 +151,9 @@ def _compute_metrics(rows: list[dict]) -> dict[str, float]:
     # TODO (Task 1): add `total_output_tokens` and `mean_output_tokens`,
     # mirroring the input-token pattern. Each row has `total_output_tokens`.
     # See tasks/task1.md.
-
+    out_toks = [r["total_output_tokens"] for r in rows]
+    metrics["total_output_tokens"] = float(sum(out_toks))
+    metrics["mean_output_tokens"] = sum(out_toks) / n
     return metrics
 
 
@@ -291,9 +297,11 @@ def main() -> None:
 
             client = MlflowClient()
             try:
-                client.get_registered_model(settings.mlflow_registered_model_name)
+                client.get_registered_model(
+                    settings.mlflow_registered_model_name)
             except MlflowException:
-                client.create_registered_model(settings.mlflow_registered_model_name)
+                client.create_registered_model(
+                    settings.mlflow_registered_model_name)
 
             # Tag and describe the new version so the Registry UI is informative
             # at a glance — not just "Version 2".
@@ -334,12 +342,15 @@ def main() -> None:
             )
         else:
             print("  registered:          (skipped)", file=sys.stderr)
-        print(f"  accuracy_overall:    {metrics['accuracy_overall']:.3f}", file=sys.stderr)
+        print(
+            f"  accuracy_overall:    {metrics['accuracy_overall']:.3f}", file=sys.stderr)
         for cat in ("travel", "off_topic", "jailbreak", "social_engineering"):
             key = f"accuracy_{cat}"
             if key in metrics:
-                print(f"  accuracy_{cat:18s}: {metrics[key]:.3f}", file=sys.stderr)
-        print(f"  total_cost_usd:       ${metrics['total_cost_usd']:.4f}", file=sys.stderr)
+                print(
+                    f"  accuracy_{cat:18s}: {metrics[key]:.3f}", file=sys.stderr)
+        print(
+            f"  total_cost_usd:       ${metrics['total_cost_usd']:.4f}", file=sys.stderr)
         print(
             f"  avg_latency_s:        {metrics['avg_latency_seconds']:.2f}",
             file=sys.stderr,
