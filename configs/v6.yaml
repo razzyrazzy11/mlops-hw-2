@@ -1,0 +1,23 @@
+# configs/v6.yaml — v5 sandwich with a cheaper input classifier.
+# Hypothesis: a smaller classifier keeps accuracy/leak-rate ~flat while cutting total_cost_usd and latency.
+# Finding: finding is now: swapping the input classifier to gemma-3-27b-it slightly increased cost without hurting quality — not the cost saving I hypothesised,
+# so v5 remains the overall better production choice.
+
+display_name: "Sandwich with lighter classifier"
+description: "v5 sandwich; input classifier swapped to google/gemma-3-27b-it (cost/quality experiment)."
+model:
+  name: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B
+  temperature: 0.0
+system_prompt: prompts/v2_explicit_refusal.txt
+guardrail:
+  type: sandwich
+  input_classifier:
+    model:
+      name: google/gemma-3-27b-it
+      temperature: 0.0
+    prompt: prompts/classifier_input.txt
+  output_validator:
+    model:
+      name: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B
+      temperature: 0.0
+    prompt: prompts/classifier_output.txt

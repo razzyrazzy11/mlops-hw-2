@@ -1,0 +1,9 @@
+{"ts": "2026-06-06T10:13:21.841244Z", "alias": "production", "from": "", "to": "v5", "op": "set"}
+{"ts": "2026-06-06T10:13:52.759770Z", "alias": "production", "from": "v5", "to": "v4", "op": "set"}
+{"ts": "2026-06-06T10:14:18.421022Z", "alias": "production", "from": "v4", "to": "v5", "op": "set"}
+{"ts": "2026-06-06T10:15:28.342864Z", "alias": "production", "from": "v5", "to": "v4", "op": "rollback"}
+{"ts": "2026-06-07T09:02:32.074945Z", "alias": "production", "from": "v4", "to": "v6", "op": "set"}
+{"ts": "2026-06-07T09:02:50.925340Z", "alias": "production", "from": "v6", "to": "v4", "op": "rollback"}
+{"ts": "2026-06-07T09:19:25.647626Z", "alias": "production", "from": "v4", "to": "v5", "op": "set"}
+{"ts": "2026-06-07T09:45:40.963610Z", "alias": "production", "from": "v5", "to": "v6", "op": "set"}
+{"ts": "2026-06-07T09:46:06.163441Z", "alias": "production", "from": "v6", "to": "v5", "op": "set"}
